@@ -8,8 +8,8 @@ This task is to write the handler and set up the serverless.yml file to deploy i
 npm install -g serverless
 
 ## Clone the source code
-git clone https://github.com/softdev1029/serverless-file-handler
-cd src
+- git clone https://github.com/softdev1029/serverless-file-handler
+- cd src
 
 ## Make a virtual environment for Python
 virtualenv venv --python=python3
