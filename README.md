@@ -11,6 +11,10 @@ npm install -g serverless
 - git clone https://github.com/softdev1029/serverless-file-handler
 - cd src
 
+## Set the bucket name for the input and the output
+- Open serverless.yml
+- Change the variable inputBucket, outputBucket
+
 ## Make a virtual environment for Python
 virtualenv venv --python=python3
 source venv/bin/activate
