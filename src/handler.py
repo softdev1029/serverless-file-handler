@@ -4,7 +4,6 @@ from os import path
 
 s3 = boto3.resource('s3')
 
-DST_BUCKET = "file-processed2"
 TMP_DIR = "/tmp"
 VERSION = 1
 MADE_TIME = '09-27 09:25 AM'
@@ -16,27 +15,21 @@ def handler(event, context):
   print(event)
 
   try:
-    srcBucket = event['Records'][0]['s3']['bucket']['name']
+    bucketName = event['Records'][0]['s3']['bucket']['name']
     srcKey = event['Records'][0]['s3']['object']['key']
   except Exception as e:
     print("Failed reading options. {} >>> >>> >>>".format(e))
     return
 
-  print("Reading {}/{}".format(srcBucket, srcKey))
+  print("Reading {}/{}".format(bucketName, srcKey))
 
-  # dst bucket
-  dstBucket = DST_BUCKET
-  dstKey = srcKey
-
-  # Sanity check: validate that source and destination are different buckets.
-  if (srcBucket == dstBucket) :
-    print("Destination bucket must not match source bucket >>> >>> >>>")
-    return
+  # destination file
+  destKey = srcKey.replace('Incoming', 'Processed')
 
   # Grabs the source file
   try:
     obj = s3.Object(
-        bucket_name=srcBucket,
+        bucket_name=bucketName,
         key=srcKey,
     )
     obj_body = obj.get()['Body'].read()
@@ -76,12 +69,12 @@ def handler(event, context):
       try:
         # Uploading the file
         obj = s3.Object(
-          bucket_name=dstBucket,
+          bucket_name=bucketName,
           key=file,
         )
         obj.put(Body=buffer)
 
-        print("Uploaded... {}/{}".format(dstBucket, file))
+        print("Uploaded... {}/{}".format(bucketName, file))
       except Exception as e:
         print("Failed uploading {} file={}".format(e, file))
   print("Done all action >>> >>> >>>")

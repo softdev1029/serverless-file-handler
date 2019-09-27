@@ -1,14 +1,6 @@
 # This file is the main config file for your service.
 
 service: serverless-file-handler
-# app and org for use with dashboard.serverless.com
-#app: your-app-name
-#org: your-org-name
-
-# You can pin your service to only deploy with a specific Serverless version
-# frameworkVersion: "=X.X.X"
-
-
 provider:
   name: aws
   runtime: python3.6
@@ -21,107 +13,16 @@ provider:
   iamRoleStatements:
     - Effect: "Allow"
       Action:
-        - "s3:*"
-      Resource: { "Fn::Join": ["", ["arn:aws:s3:::*", "/*" ] ] }
-
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.py
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.py
-#    - exclude-me-dir/**
+        - "s3:GetObject"
+        - "s3:PutObject"
+        - "s3:DeleteObject"
+      Resource: { "Fn::Join": ["", ["arn:aws:s3:::myBucket", "/*" ] ] }
 
 custom:
-  inputBucket: file-incoming
-  outputBucket: file-processed2
+  myBucket: myBucket
 
 functions:
   serverless-file-handler:
     handler: handler.handler
     events:
-      - s3: ${self:custom.inputBucket}
-#    The following are a few example events you can configure
-#    NOTE: Please make sure to change your handler code to work with those events
-#    Check the event documentation for details
-#    events:
-#      - http:
-#          path: users/create
-#          method: get
-#      - websocket: $connect
-#      - s3: ${env:BUCKET}
-#      - schedule: rate(10 minutes)
-#      - sns: greeter-topic
-#      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
-#      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
-#      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
-#      - iot:
-#          sql: "SELECT * FROM 'some_topic'"
-#      - cloudwatchEvent:
-#          event:
-#            source:
-#              - "aws.ec2"
-#            detail-type:
-#              - "EC2 Instance State-change Notification"
-#            detail:
-#              state:
-#                - pending
-#      - cloudwatchLog: '/aws/lambda/hello'
-#      - cognitoUserPool:
-#          pool: MyUserPool
-#          trigger: PreSignUp
-#      - alb:
-#          listenerArn: arn:aws:elasticloadbalancing:us-east-1:XXXXXX:listener/app/my-load-balancer/50dc6c495c0c9188/
-#          priority: 1
-#          conditions:
-#            host: example.com
-#            path: /hello
-
-#    Define function environment variables here
-#    environment:
-#      variable2: value2
-
-# you can add CloudFormation resource templates here
-resources:
-  Resources:
-    # S3BucketInput:
-    #   Type: AWS::S3::Bucket
-    #   Properties:
-    #     BucketName: ${self:custom.inputBucket}
-    #     AccessControl: Private
-    #     CorsConfiguration:
-    #       CorsRules:
-    #       - AllowedMethods:
-    #         - GET
-    #         - PUT
-    #         - POST
-    #         - HEAD
-    #         AllowedOrigins:
-    #         - "*"
-    #         AllowedHeaders:
-    #         - "*"
-    S3BucketOutput:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${self:custom.outputBucket}
-        AccessControl: Private
-        CorsConfiguration:
-          CorsRules:
-          - AllowedMethods:
-            - GET
-            - PUT
-            - POST
-            - HEAD
-            AllowedOrigins:
-            - "*"
-            AllowedHeaders:
-            - "*"
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+      - s3: ${self:custom.myBucket}
