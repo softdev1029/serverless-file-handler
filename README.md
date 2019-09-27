@@ -7,6 +7,10 @@ This task is to write the handler and set up the serverless.yml file to deploy i
 ## Install Serverless Framework
 npm install -g serverless
 
+## Clone the source code
+git clone https://github.com/softdev1029/serverless-file-handler
+cd src
+
 ## Make a virtual environment for Python
 virtualenv venv --python=python3
 source venv/bin/activate
@@ -19,4 +23,4 @@ pip freeze > requirements.txt
 serverless config credentials --provider aws --key <YOUR_KEY> --secret <YOUR_SECRET>
 
 ## Deploy the serverless service
-serverless deploy
+serverless deploy -v
