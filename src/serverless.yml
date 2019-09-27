@@ -87,6 +87,22 @@ functions:
 # you can add CloudFormation resource templates here
 resources:
   Resources:
+    InputBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: file-incoming
+        AccessControl: Private
+        CorsConfiguration:
+          CorsRules:
+          - AllowedMethods:
+            - GET
+            - PUT
+            - POST
+            - HEAD
+            AllowedOrigins:
+            - "*"
+            AllowedHeaders:
+            - "*"
     UploadBucket:
       Type: AWS::S3::Bucket
       Properties:
