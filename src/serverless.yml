@@ -37,13 +37,15 @@ provider:
 #    - exclude-me.py
 #    - exclude-me-dir/**
 
+custom:
+  inputBucket: file-incoming
+  outputBucket: file-processed2
+
 functions:
   serverless-file-handler:
     handler: handler.handler
     events:
-      - s3:
-        bucket: file-incoming
-        event: s3:ObjectCreated:*
+      - s3: ${self:custom.inputBucket}
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -87,26 +89,26 @@ functions:
 # you can add CloudFormation resource templates here
 resources:
   Resources:
-    InputBucket:
+    # S3BucketInput:
+    #   Type: AWS::S3::Bucket
+    #   Properties:
+    #     BucketName: ${self:custom.inputBucket}
+    #     AccessControl: Private
+    #     CorsConfiguration:
+    #       CorsRules:
+    #       - AllowedMethods:
+    #         - GET
+    #         - PUT
+    #         - POST
+    #         - HEAD
+    #         AllowedOrigins:
+    #         - "*"
+    #         AllowedHeaders:
+    #         - "*"
+    S3BucketOutput:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: file-incoming
-        AccessControl: Private
-        CorsConfiguration:
-          CorsRules:
-          - AllowedMethods:
-            - GET
-            - PUT
-            - POST
-            - HEAD
-            AllowedOrigins:
-            - "*"
-            AllowedHeaders:
-            - "*"
-    UploadBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: file-processed2
+        BucketName: ${self:custom.outputBucket}
         AccessControl: Private
         CorsConfiguration:
           CorsRules:
