@@ -44,6 +44,7 @@ def handler(event, context):
     print("Failed downloading source file. {} >>> >>> >>>".format(e))
     return
 
+  # Read the file content
   try:
     src_file = srcKey.replace('/', '-')
     src_name = src_file
@@ -54,6 +55,13 @@ def handler(event, context):
     print("Failed writing source file. {} : {} >>> >>> >>>".format(e, TMP_DIR + '/' + src_file))
     return
 
+  # Delete the original file from the input bucket
+  try:
+    obj.delete()
+  except Exception as e:
+    print("Failed deleting the original file. {}".format(e))
+
+  # Upload it to the destination bucket
   for file in os.listdir(TMP_DIR):
     if file.startswith(src_name):
       try:
