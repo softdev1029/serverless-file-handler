@@ -1,3 +1,9 @@
+# Serverless S3 File Handler
+
+One of the common entry points of data into a system is a file upload - via browser, FTP, email, or other means.
+We separate out the processing of the file from the receipt of the file by using a Lambda function triggered by a file’s arrival.
+This task is to write the handler and set up the serverless.yml file to deploy it.
+
 ## Install Serverless Framework
 npm install -g serverless
 
