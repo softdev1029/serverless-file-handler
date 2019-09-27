@@ -1,6 +1,7 @@
 # This file is the main config file for your service.
 
 service: serverless-file-handler
+
 provider:
   name: aws
   runtime: python3.6
@@ -16,13 +17,10 @@ provider:
         - "s3:GetObject"
         - "s3:PutObject"
         - "s3:DeleteObject"
-      Resource: { "Fn::Join": ["", ["arn:aws:s3:::myBucket", "/*" ] ] }
-
-custom:
-  myBucket: myBucket
+      Resource: { "Fn::Join": ["", ["arn:aws:s3:::file-print", "/*" ] ] }
 
 functions:
   serverless-file-handler:
     handler: handler.handler
     events:
-      - s3: ${self:custom.myBucket}
+      - s3: file-print
