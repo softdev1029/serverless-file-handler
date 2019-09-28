@@ -4,9 +4,8 @@ from os import path
 
 s3 = boto3.resource('s3')
 
-TMP_DIR = "/tmp"
 VERSION = 1
-MADE_TIME = '09-27 09:25 AM'
+MADE_TIME = '09-27 09:55 PM'
 
 def handler(event, context):
 
@@ -26,6 +25,11 @@ def handler(event, context):
   # Check if the object is from the input folder
   if srcKey.startswith('Incoming/') != True:
     print("We only process the objects from Incoming/ folder. >>> >>> >>>")
+    return
+
+  # Check if the object is just the input folder
+  if srcKey.endswith('Incoming/') != True:
+    print("We don't process the Incoming/ folder itself. >>> >>> >>>")
     return
 
   # destination file
