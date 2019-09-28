@@ -23,6 +23,11 @@ def handler(event, context):
 
   print("Reading {}/{}".format(bucketName, srcKey))
 
+  # Check if the object is from the input folder
+  if srcKey.startswith('Incoming/') != True:
+    print("We only process the objects from Incoming/ folder. >>> >>> >>>")
+    return
+
   # destination file
   destKey = srcKey.replace('Incoming', 'Processed')
 
@@ -70,14 +75,14 @@ def handler(event, context):
         # Uploading the file
         obj = s3.Object(
           bucket_name=bucketName,
-          key=file,
+          key=destKey,
         )
         obj.put(Body=buffer)
 
-        print("Uploaded... {}/{}".format(bucketName, file))
+        print("Uploaded... {}/{}".format(bucketName, destKey))
       except Exception as e:
         print("Failed uploading {} file={}".format(e, file))
   print("Done all action >>> >>> >>>")
 
 if __name__ == "__main__":
-  main('', '')
+  handler('', '')
