@@ -38,19 +38,9 @@ def handler(event, context):
         key=srcKey,
     )
     obj_body = obj.get()['Body'].read()
+    print("File [{}], content=[{}]".format(srcKey, obj_body))
   except Exception as e:
-    print("Failed downloading source file. {} >>> >>> >>>".format(e))
-    return
-
-  # Read the file content
-  try:
-    src_file = srcKey.replace('/', '-')
-    src_name = src_file
-    file = open(TMP_DIR + '/' + src_file, 'wb')
-    file.write(obj_body)
-    file.close()
-  except Exception as e:
-    print("Failed writing source file. {} : {} >>> >>> >>>".format(e, TMP_DIR + '/' + src_file))
+    print("Failed reading the source file. {} >>> >>> >>>".format(e))
     return
 
   # Delete the original file from the input bucket
@@ -59,30 +49,18 @@ def handler(event, context):
   except Exception as e:
     print("Failed deleting the original file. {}".format(e))
 
-  # Upload it to the destination bucket
-  for file in os.listdir(TMP_DIR):
-    if file.startswith(src_name):
-      try:
-        src_file = open(TMP_DIR + '/' + file, 'rb')
-        buffer = src_file.read()
-        print("File [{}], content=[{}]".format(file, buffer))
-        os.remove(TMP_DIR + '/' + file)
-        src_file.close()
-      except Exception as e:
-        print("Failed reading {} file={}".format(e, TMP_DIR + '/' + file))
+  # Copy it to the destination folder
+  try:
+    # Uploading the file
+    obj = s3.Object(
+      bucket_name=bucketName,
+      key=destKey,
+    )
+    obj.put(Body=obj_body)
 
-      try:
-        # Uploading the file
-        obj = s3.Object(
-          bucket_name=bucketName,
-          key=destKey,
-        )
-        obj.put(Body=buffer)
-
-        print("Uploaded... {}/{}".format(bucketName, destKey))
-      except Exception as e:
-        print("Failed uploading {} file={}".format(e, file))
-  print("Done all action >>> >>> >>>")
+    print("Moved... {}/{}".format(bucketName, destKey))
+  except Exception as e:
+    print("Failed moving {} file={}".format(e, destKey))
 
 if __name__ == "__main__":
   handler('', '')
